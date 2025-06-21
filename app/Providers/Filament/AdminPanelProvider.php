@@ -93,8 +93,15 @@ class AdminPanelProvider extends PanelProvider
                         ->url(Dashboard::getUrl()),
                 ]),
 
+            NavigationGroup::make('products')
+                ->label(__('Products management'))
+                ->items([
+                    ...Resources\CategoryResource::getNavigationItems(),
+                    ...Resources\SubcategoryResource::getNavigationItems(),
+                ]),
+
             NavigationGroup::make('access_management')
-                ->label(__('Access Management'))
+                ->label(__('Access management'))
                 ->items([
                     ...Resources\UserResource::getNavigationItems(),
                     ...Resources\RoleResource::getNavigationItems(),

@@ -230,5 +230,12 @@
     "Name": "Nombre",
     "Email": "Correo electrónico",
     "Password": "Contraseña",
-    "Email address copied": "Dirección de correo electrónico copiada"
+    "Email address copied": "Dirección de correo electrónico copiada",
+    "Products management": "Gestión de productos",
+    "Category": "Categoría",
+    "Categories": "Categorías",
+    "Subcategory": "Subcategoría",
+    "Subcategories": "Subcategorías",
+    "Product": "Producto",
+    "Products": "Productos"
 }
