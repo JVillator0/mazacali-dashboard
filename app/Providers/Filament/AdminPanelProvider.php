@@ -2,11 +2,15 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Pages\Dashboard;
+use App\Filament\Resources;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
-use Filament\Pages;
+use Filament\Navigation\NavigationBuilder;
+use Filament\Navigation\NavigationGroup;
+use Filament\Navigation\NavigationItem;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
@@ -19,14 +23,14 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Jeffgreco13\FilamentBreezy\BreezyCore;
 
-class DashboardPanelProvider extends PanelProvider
+class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
         return $panel
             ->default()
-            ->id('dashboard')
-            ->path('dashboard')
+            ->id('admin')
+            ->path('admin')
             ->login()
             ->passwordReset()
             ->profile(isSimple: false)
@@ -36,8 +40,9 @@ class DashboardPanelProvider extends PanelProvider
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
-                Pages\Dashboard::class,
+                Dashboard::class,
             ])
+            ->navigation(fn (NavigationBuilder $builder) => $builder->groups($this->getMenuNavigation()))
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
                 Widgets\AccountWidget::class,
@@ -58,6 +63,9 @@ class DashboardPanelProvider extends PanelProvider
                 Authenticate::class,
             ])
             ->plugin(
+                // https://filamentphp.com/plugins/bezhansalleh-shield
+                \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make(),
+
                 // https://filamentphp.com/plugins/jeffgreco-breezy
                 BreezyCore::make()
                     ->myProfile(
@@ -67,7 +75,30 @@ class DashboardPanelProvider extends PanelProvider
                         navigationGroup: 'Settings', // Sets the navigation group for the My Profile page (default = null)
                         hasAvatars: true, // Enables the avatar upload form component (default = false)
                         slug: 'my-profile' // Sets the slug for the profile page (default = 'my-profile')
-                    )
+                    ),
+
+                //
             );
+    }
+
+    private function getMenuNavigation(): array
+    {
+        return [
+            NavigationGroup::make('home')
+                ->label(__('Home'))
+                ->items([
+                    NavigationItem::make('home')
+                        ->label(__('Home'))
+                        ->icon('heroicon-o-home')
+                        ->url(Dashboard::getUrl()),
+                ]),
+
+            NavigationGroup::make('access_management')
+                ->label(__('Access Management'))
+                ->items([
+                    ...Resources\UserResource::getNavigationItems(),
+                    ...Resources\RoleResource::getNavigationItems(),
+                ]),
+        ];
     }
 }
