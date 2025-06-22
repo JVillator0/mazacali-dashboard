@@ -96,6 +96,7 @@ class AdminPanelProvider extends PanelProvider
             NavigationGroup::make('products')
                 ->label(__('Products management'))
                 ->items([
+                    ...Resources\ProductResource::getNavigationItems(),
                     ...Resources\CategoryResource::getNavigationItems(),
                     ...Resources\SubcategoryResource::getNavigationItems(),
                 ]),

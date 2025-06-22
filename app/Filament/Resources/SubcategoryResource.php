@@ -16,6 +16,11 @@ class SubcategoryResource extends Resource
 {
     protected static ?string $model = Subcategory::class;
 
+    public static function getModelLabel(): string
+    {
+        return __('Subcategory');
+    }
+
     protected static ?string $navigationIcon = 'heroicon-o-square-3-stack-3d';
 
     public static function form(Form $form): Form
@@ -51,6 +56,7 @@ class SubcategoryResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('category.name')
                     ->label('Category')
+                    ->badge()
                     ->sortable()
                     ->searchable(),
 

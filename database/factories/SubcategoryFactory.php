@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Category;
+use App\Models\Product;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -22,5 +23,12 @@ class SubcategoryFactory extends Factory
             'description' => $this->faker->sentence(),
             'category_id' => Category::factory()->create()->id,
         ];
+    }
+
+    public function configure(): static
+    {
+        return $this->afterCreating(function ($subcategory) {
+            Product::factory(5)->create(['subcategory_id' => $subcategory->id]);
+        });
     }
 }

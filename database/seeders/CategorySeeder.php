@@ -14,7 +14,7 @@ class CategorySeeder extends Seeder
     {
         Category::factory()
             ->count(5)
-            ->withSubcategories(3) // Create 3 subcategories for each category
+            ->withSubcategories(3) // Create 3 subcategories for each category, each with 5 products
             ->create();
     }
 }

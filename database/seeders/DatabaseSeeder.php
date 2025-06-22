@@ -18,5 +18,21 @@ class DatabaseSeeder extends Seeder
 
             CategorySeeder::class,
         ]);
+
+        $this->defaultProductImage();
+    }
+
+    private function defaultProductImage(): void
+    {
+        $defaultImage = base_path('database/seeders/assets/images/default.png');
+        $uniqueName = 'default.png';
+        $destinationDir = public_path('storage/products');
+        if (! file_exists($destinationDir)) {
+            mkdir($destinationDir, 0777, true);
+        }
+        $destinationPath = $destinationDir.'/'.$uniqueName;
+        if (file_exists($defaultImage)) {
+            copy($defaultImage, $destinationPath);
+        }
     }
 }
