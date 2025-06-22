@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Enums\MeasureUnitEnum;
 use App\Filament\Resources\ExpenseResource\Pages;
+use App\Filament\Resources\ExpenseResource\Widgets;
 use App\Models\Expense;
 use App\Models\SupplyCategory;
 use Filament\Forms;
@@ -160,7 +161,7 @@ class ExpenseResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('supply.name')
                     ->label(__('Supply'))
-                    ->description(fn ($record) => $record->supply?->supplyCategory?->name ?? null)
+                    ->description(fn($record) => $record->supply?->supplyCategory?->name ?? null)
                     ->sortable()
                     ->searchable(),
 
@@ -172,7 +173,7 @@ class ExpenseResource extends Resource
                 Tables\Columns\TextColumn::make('quantity')
                     ->label(__('Quantity'))
                     ->description(
-                        fn (Expense $record) => MeasureUnitEnum::from($record->measure_unit->value)->translatedLabel(plural: $record->quantity > 1)
+                        fn(Expense $record) => MeasureUnitEnum::tryFrom($record->measure_unit?->value)?->translatedLabel(plural: $record->quantity > 1)
                     )
                     ->badge()
                     ->numeric()
@@ -185,7 +186,7 @@ class ExpenseResource extends Resource
 
                 Tables\Columns\TextColumn::make('notes')
                     ->label(__('Notes'))
-                    ->tooltip(fn ($state) => strlen($state) > 30 ? $state : null)
+                    ->tooltip(fn($state) => strlen($state) > 30 ? $state : null)
                     ->limit(30)
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -239,7 +240,7 @@ class ExpenseResource extends Resource
                     ->searchable()
                     ->multiple()
                     ->preload()
-                    ->options(fn (Builder $query) => $query->pluck('name', 'id'))
+                    ->options(fn(Builder $query) => $query->pluck('name', 'id'))
                     ->columnSpan([
                         'default' => 6,
                         'sm' => 3,
@@ -293,6 +294,14 @@ class ExpenseResource extends Resource
                     Tables\Actions\RestoreBulkAction::make(),
                 ]),
             ]);
+    }
+
+    public static function getWidgets(): array
+    {
+        return [
+            Widgets\ExpenseStatsOverview::class,
+            Widgets\ExpenseChartWidget::class,
+        ];
     }
 
     public static function getRelations(): array

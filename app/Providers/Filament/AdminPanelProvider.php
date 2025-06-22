@@ -23,6 +23,7 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Jeffgreco13\FilamentBreezy\BreezyCore;
+use App\Filament\Pages\StatisticsPage;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -45,7 +46,7 @@ class AdminPanelProvider extends PanelProvider
             ->pages([
                 Dashboard::class,
             ])
-            ->navigation(fn (NavigationBuilder $builder) => $builder->groups($this->getMenuNavigation()))
+            ->navigation(fn(NavigationBuilder $builder) => $builder->groups($this->getMenuNavigation()))
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
                 Widgets\AccountWidget::class,
@@ -117,6 +118,15 @@ class AdminPanelProvider extends PanelProvider
                     ...Resources\ExpenseResource::getNavigationItems(),
                     ...Resources\SupplyResource::getNavigationItems(),
                     ...Resources\SupplyCategoryResource::getNavigationItems(),
+                ]),
+
+            NavigationGroup::make('reports')
+                ->label(__('Reports'))
+                ->items([
+                    NavigationItem::make('statistics')
+                        ->label(__('Statistics'))
+                        ->icon('heroicon-o-chart-bar')
+                        ->url(StatisticsPage::getUrl()),
                 ]),
 
             NavigationGroup::make('access_management')
