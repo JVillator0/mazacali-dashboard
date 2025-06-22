@@ -278,5 +278,21 @@
     "Discount percentage": "Porcentaje de descuento",
     "General information": "Información general",
     "Mark as available": "Marcar como disponible",
-    "Tables marked as available": "Mesas marcadas como disponibles"
+    "Tables marked as available": "Mesas marcadas como disponibles",
+    "Piece": "Pieza",
+    "Pound": "Libra",
+    "Ounce": "Onza",
+    "Gram": "Gramo",
+    "Kilogram": "Kilogramo",
+    "Liter": "Litro",
+    "Milliliter": "Mililitro",
+    "Other": "Otro",
+    "Pieces": "Piezas",
+    "Pounds": "Libras",
+    "Ounces": "Onzas",
+    "Grams": "Gramos",
+    "Kilograms": "Kilogramos",
+    "Liters": "Litros",
+    "Milliliters": "Mililitros",
+    "Others": "Otros"
 }

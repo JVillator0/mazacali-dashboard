@@ -8,8 +8,8 @@ use Filament\Infolists\Components\TextEntry;
 use Filament\Tables\Columns\Column;
 use Filament\Tables\Filters\BaseFilter;
 use Filament\Tables\Filters\Filter;
-use Illuminate\Support\ServiceProvider;
 use Filament\Tables\Table;
+use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {

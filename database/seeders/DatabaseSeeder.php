@@ -21,6 +21,9 @@ class DatabaseSeeder extends Seeder
             TableSeeder::class,
 
             OrderSeeder::class,
+
+            SupplyCategorySeeder::class,
+            ExpenseSeeder::class,
         ]);
 
         $this->defaultProductImage();

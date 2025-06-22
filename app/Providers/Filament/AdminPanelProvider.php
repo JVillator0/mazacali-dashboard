@@ -44,7 +44,7 @@ class AdminPanelProvider extends PanelProvider
             ->pages([
                 Dashboard::class,
             ])
-            ->navigation(fn(NavigationBuilder $builder) => $builder->groups($this->getMenuNavigation()))
+            ->navigation(fn (NavigationBuilder $builder) => $builder->groups($this->getMenuNavigation()))
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
                 Widgets\AccountWidget::class,
