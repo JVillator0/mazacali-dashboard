@@ -123,4 +123,15 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    /*|--------------------------------------------------------------------------
+    | Application Custom Configuration
+    |--------------------------------------------------------------------------
+    |
+    | Here you can define any custom configuration options for your application.
+    | These options can be used throughout your application to maintain
+    | consistency and to avoid hardcoding values in your codebase.
+    |
+    */
+
+    'vat_rate' => env('VAT_RATE', 0.13), // 13% VAT rate
 ];

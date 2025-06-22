@@ -36,4 +36,9 @@ class Product extends Model
     {
         return $this->belongsToThrough(Category::class, Subcategory::class);
     }
+
+    public function scopeAvailable($query)
+    {
+        return $query->where('available', true);
+    }
 }

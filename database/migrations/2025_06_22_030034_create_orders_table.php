@@ -17,11 +17,11 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained();
             $table->string('identifier')->unique();
-            $table->decimal('subtotal', 10, 2);
+            $table->decimal('subtotal', 10, 2)->default(0.00);
             $table->decimal('tax', 10, 2)->default(0.00);
             $table->decimal('tipping_percentage', 5, 2)->default(0.00);
             $table->decimal('tipping', 10, 2)->default(0.00);
-            $table->decimal('total', 10, 2);
+            $table->decimal('total', 10, 2)->default(0.00);
             $table->enum('status', OrderStatusEnum::keys())->default(OrderStatusEnum::PENDING->value);
             $table->enum('order_type', OrderTypeEnum::keys())->default(OrderTypeEnum::DINE_IN->value);
             $table->timestamps();

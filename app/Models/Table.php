@@ -24,4 +24,9 @@ class Table extends Model
     {
         return $this->belongsToMany(Order::class, 'order_table');
     }
+
+    public function scopeAvailable($query)
+    {
+        return $query->where('available', true);
+    }
 }

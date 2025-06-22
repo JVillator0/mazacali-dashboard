@@ -13,4 +13,10 @@ enum OrderTypeEnum: string
 
     #[Description('Takeaway')]
     case TAKEAWAY = 'takeaway';
+
+    #[Description('Delivery')]
+    case DELIVERY = 'delivery';
+
+    #[Description('Other')]
+    case OTHER = 'other';
 }

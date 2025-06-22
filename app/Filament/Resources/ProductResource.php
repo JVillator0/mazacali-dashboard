@@ -47,7 +47,7 @@ class ProductResource extends Resource
                         ->options(
                             Category::with('subcategories')
                                 ->get()
-                                ->mapWithKeys(function ($category) {
+                                ->mapWithKeys(function (Category $category) {
                                     if ($category->subcategories->isNotEmpty()) {
                                         return [
                                             $category->name => $category->subcategories->pluck('name', 'id')->toArray(),

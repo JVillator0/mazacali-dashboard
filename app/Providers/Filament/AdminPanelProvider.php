@@ -14,6 +14,7 @@ use Filament\Navigation\NavigationItem;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
+use Filament\Support\Enums\MaxWidth;
 use Filament\Widgets;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -31,6 +32,7 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
+            ->maxContentWidth(MaxWidth::Full)
             ->login()
             ->passwordReset()
             ->profile(isSimple: false)
@@ -91,6 +93,12 @@ class AdminPanelProvider extends PanelProvider
                         ->label(__('Home'))
                         ->icon('heroicon-o-home')
                         ->url(Dashboard::getUrl()),
+                ]),
+
+            NavigationGroup::make('sales')
+                ->label(__('Sales'))
+                ->items([
+                    ...Resources\OrderResource::getNavigationItems(),
                 ]),
 
             NavigationGroup::make('products')

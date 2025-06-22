@@ -51,4 +51,16 @@ class Order extends Model
     {
         return $this->belongsToMany(Table::class, 'order_table');
     }
+
+    public function active()
+    {
+        // Check if the order is active based on its status
+        $checkStatus = $this->status === OrderStatusEnum::PENDING || $this->status === OrderStatusEnum::IN_PROGRESS;
+
+        // Check if the order was updated within the last 30 minutes
+        $checkTime = $this->updated_at->diffInMinutes(now()) < 30;
+
+        // Return true if either condition is met
+        return $checkStatus || $checkTime;
+    }
 }

@@ -17,9 +17,10 @@ return new class extends Migration
             $table->foreignId('product_id')->constrained();
             $table->integer('quantity')->default(1);
             $table->decimal('unit_price', 10, 2);
+            $table->decimal('discount_percentage', 5, 2)->default(0.00);
             $table->decimal('discount', 10, 2)->default(0.00);
             $table->decimal('subtotal', 10, 2);
-            $table->text('notes')->nullable();
+            $table->string('notes', 500)->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

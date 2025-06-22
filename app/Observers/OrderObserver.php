@@ -4,6 +4,7 @@ namespace App\Observers;
 
 use App\Enums\OrderStatusEnum;
 use App\Models\Order;
+use App\Models\Table;
 
 class OrderObserver
 {
@@ -23,6 +24,41 @@ class OrderObserver
         // Set default status if not provided
         if (empty($order->status)) {
             $order->status = OrderStatusEnum::PENDING;
+        }
+    }
+
+    public function created(Order $order)
+    {
+        $tables = $order->tables;
+        if ($tables->isNotEmpty() && (
+            $order->status === OrderStatusEnum::PENDING ||
+            $order->status === OrderStatusEnum::IN_PROGRESS
+        )) {
+            Table::whereIn('id', $tables->pluck('id'))
+                ->update(['available' => false]);
+        }
+    }
+
+    public function updated(Order $order)
+    {
+        if ($order->isDirty('status') && (
+            $order->status === OrderStatusEnum::CANCELLED ||
+            $order->status === OrderStatusEnum::COMPLETED
+        )) {
+            $tables = $order->tables;
+            if ($tables->isNotEmpty()) {
+                Table::whereIn('id', $tables->pluck('id'))
+                    ->update(['available' => true]);
+            }
+        }
+    }
+
+    public function deleting(Order $order)
+    {
+        $tables = $order->tables;
+        if ($tables->isNotEmpty()) {
+            Table::whereIn('id', $tables->pluck('id'))
+                ->update(['available' => true]);
         }
     }
 }

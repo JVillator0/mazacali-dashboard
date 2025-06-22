@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use App\Observers\OrderDetailObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+#[ObservedBy(OrderDetailObserver::class)]
 class OrderDetail extends Model
 {
     use HasFactory, SoftDeletes;
@@ -15,6 +18,7 @@ class OrderDetail extends Model
         'product_id',
         'quantity',
         'unit_price',
+        'discount_percentage',
         'discount',
         'subtotal',
         'notes',
@@ -23,6 +27,7 @@ class OrderDetail extends Model
     protected $casts = [
         'quantity' => 'integer',
         'unit_price' => 'decimal:2',
+        'discount_percentage' => 'decimal:2',
         'discount' => 'decimal:2',
         'subtotal' => 'decimal:2',
     ];
