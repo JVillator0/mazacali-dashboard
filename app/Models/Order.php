@@ -52,7 +52,7 @@ class Order extends Model
         return $this->belongsToMany(Table::class, 'order_table');
     }
 
-    public function active()
+    public function isEditable()
     {
         // Check if the order is active based on its status
         $checkStatus = $this->status === OrderStatusEnum::PENDING || $this->status === OrderStatusEnum::IN_PROGRESS;

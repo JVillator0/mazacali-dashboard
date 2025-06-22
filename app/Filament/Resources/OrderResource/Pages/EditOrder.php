@@ -16,7 +16,12 @@ class EditOrder extends EditRecord
     {
         return [
             Actions\ViewAction::make(),
-            Actions\DeleteAction::make()->visible(fn ($record) => $record->active()),
         ];
+    }
+
+    protected function authorizeAccess(): void
+    {
+        // Abort if the record is not editable, return HTTP 403 Forbidden
+        abort_unless($this->record->isEditable(), 403);
     }
 }

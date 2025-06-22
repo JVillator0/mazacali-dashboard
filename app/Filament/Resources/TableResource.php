@@ -6,6 +6,7 @@ use App\Filament\Resources\TableResource\Pages;
 use App\Models\Table as TableModel;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Grouping\Group;
@@ -85,7 +86,7 @@ class TableResource extends Resource
                     ->limit(50)
                     ->sortable()
                     ->searchable()
-                    ->toggleable(isToggledHiddenByDefault: false),
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime('F j, Y g:i A')
@@ -110,6 +111,23 @@ class TableResource extends Resource
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
                 Tables\Actions\RestoreAction::make(),
+            ])
+            ->bulkActions([
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\BulkAction::make('markAsAvailable')
+                        ->label(__('Mark as available'))
+                        ->action(function ($records) {
+                            TableModel::whereIn('id', $records->pluck('id'))
+                                ->update(['available' => true]);
+
+                            Notification::make()
+                                ->title(__('Tables marked as available'))
+                                ->success()
+                                ->send();
+                        })
+                        ->requiresConfirmation()
+                        ->icon('heroicon-o-check'),
+                ]),
             ]);
     }
 

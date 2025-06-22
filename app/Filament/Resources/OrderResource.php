@@ -218,6 +218,7 @@ class OrderResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('user.name')
                     ->label(__('User'))
+                    ->badge()
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('identifier')
@@ -295,9 +296,7 @@ class OrderResource extends Resource
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make()->visible(fn ($record) => $record->active()),
-                Tables\Actions\DeleteAction::make()->visible(fn ($record) => $record->active()),
-                Tables\Actions\RestoreAction::make(),
+                Tables\Actions\EditAction::make()->visible(fn ($record) => $record->isEditable()),
             ]);
     }
 

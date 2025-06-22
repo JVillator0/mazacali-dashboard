@@ -13,7 +13,7 @@ class ViewOrder extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\EditAction::make()->visible(fn ($record) => $record->active()),
+            Actions\EditAction::make()->visible(fn ($record) => $record->isEditable()),
         ];
     }
 }
