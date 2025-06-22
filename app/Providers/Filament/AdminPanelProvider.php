@@ -35,6 +35,7 @@ class AdminPanelProvider extends PanelProvider
             ->maxContentWidth(MaxWidth::Full)
             ->login()
             ->passwordReset()
+            ->sidebarCollapsibleOnDesktop()
             ->profile(isSimple: false)
             ->colors([
                 'primary' => Color::Blue,
@@ -108,6 +109,14 @@ class AdminPanelProvider extends PanelProvider
                     ...Resources\ProductCategoryResource::getNavigationItems(),
                     ...Resources\ProductSubcategoryResource::getNavigationItems(),
                     ...Resources\TableResource::getNavigationItems(),
+                ]),
+
+            NavigationGroup::make('supply_management')
+                ->label(__('Supply management'))
+                ->items([
+                    ...Resources\ExpenseResource::getNavigationItems(),
+                    ...Resources\SupplyResource::getNavigationItems(),
+                    ...Resources\SupplyCategoryResource::getNavigationItems(),
                 ]),
 
             NavigationGroup::make('access_management')

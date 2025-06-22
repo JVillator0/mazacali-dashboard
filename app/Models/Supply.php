@@ -16,7 +16,7 @@ class Supply extends Model
         'supply_category_id',
     ];
 
-    public function category()
+    public function supplyCategory()
     {
         return $this->belongsTo(SupplyCategory::class);
     }

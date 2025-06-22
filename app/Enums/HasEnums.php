@@ -3,6 +3,7 @@
 namespace App\Enums;
 
 use App\Attributes\Description;
+use Illuminate\Support\Str;
 
 trait HasEnums
 {
@@ -42,8 +43,12 @@ trait HasEnums
         return $attributes[0]->newInstance()->text ?? $this->value;
     }
 
-    public function translatedLabel(): string
+    public function translatedLabel(bool $plural = false): string
     {
+        if ($plural) {
+            return __(Str::plural($this->label()));
+        }
+
         return __($this->label());
     }
 
