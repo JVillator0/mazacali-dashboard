@@ -247,5 +247,11 @@
     "Restaurant management": "Gestión de restaurante",
     "Table": "Mesa",
     "Tables": "Mesas",
-    "Ideal for providing additional details about the table, such as its location or special features.": "Ideal para proporcionar detalles adicionales sobre la mesa, como su ubicación o características especiales."
+    "Ideal for providing additional details about the table, such as its location or special features.": "Ideal para proporcionar detalles adicionales sobre la mesa, como su ubicación o características especiales.",
+    "Pending": "Pendiente",
+    "In Progress": "En progreso",
+    "Completed": "Completado",
+    "Cancelled": "Cancelado",
+    "Dine In": "Comer en el lugar",
+    "Takeaway": "Para llevar"
 }

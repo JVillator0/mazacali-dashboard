@@ -19,4 +19,9 @@ class Table extends Model
     protected $casts = [
         'available' => 'boolean',
     ];
+
+    public function orders()
+    {
+        return $this->belongsToMany(Order::class, 'order_table');
+    }
 }
