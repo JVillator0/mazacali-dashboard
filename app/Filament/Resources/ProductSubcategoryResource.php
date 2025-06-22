@@ -2,8 +2,8 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\SubcategoryResource\Pages;
-use App\Models\Subcategory;
+use App\Filament\Resources\ProductSubcategoryResource\Pages;
+use App\Models\ProductSubcategory;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -13,9 +13,9 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class SubcategoryResource extends Resource
+class ProductSubcategoryResource extends Resource
 {
-    protected static ?string $model = Subcategory::class;
+    protected static ?string $model = ProductSubcategory::class;
 
     public static function getModelLabel(): string
     {
@@ -29,7 +29,7 @@ class SubcategoryResource extends Resource
         return $form
             ->schema([
                 Forms\Components\Section::make()->schema([
-                    Forms\Components\Select::make('category_id')
+                    Forms\Components\Select::make('product_category_id')
                         ->label('Category')
                         ->relationship('category', 'name')
                         ->required()
@@ -73,7 +73,7 @@ class SubcategoryResource extends Resource
 
                 Tables\Columns\TextColumn::make('description')
                     ->label('Description')
-                    ->tooltip(fn ($state) => strlen($state) > 50 ? $state : null)
+                    ->tooltip(fn($state) => strlen($state) > 50 ? $state : null)
                     ->limit(50)
                     ->sortable()
                     ->searchable(),
@@ -94,7 +94,7 @@ class SubcategoryResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                Tables\Filters\SelectFilter::make('category_id')
+                Tables\Filters\SelectFilter::make('product_category_id')
                     ->label('Category')
                     ->relationship('category', 'name')
                     ->searchable()
@@ -121,10 +121,10 @@ class SubcategoryResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListSubcategories::route('/'),
-            'create' => Pages\CreateSubcategory::route('/create'),
-            'view' => Pages\ViewSubcategory::route('/{record}'),
-            'edit' => Pages\EditSubcategory::route('/{record}/edit'),
+            'index' => Pages\ListProductSubcategories::route('/'),
+            'create' => Pages\CreateProductSubcategory::route('/create'),
+            'view' => Pages\ViewProductSubcategory::route('/{record}'),
+            'edit' => Pages\EditProductSubcategory::route('/{record}/edit'),
         ];
     }
 

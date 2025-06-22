@@ -2,8 +2,8 @@
 
 namespace App\Filament\Resources\OrderResource\RelationManagers;
 
-use App\Models\Category;
 use App\Models\Product;
+use App\Models\ProductCategory;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
@@ -15,6 +15,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Tables\Columns\Summarizers;
 
 class OrderDetailsRelationManager extends RelationManager
 {
@@ -34,14 +35,14 @@ class OrderDetailsRelationManager extends RelationManager
                 Forms\Components\Select::make('product_id')
                     ->label(__('Product'))
                     ->options(
-                        Category::query()
+                        ProductCategory::query()
                             ->with([
-                                'subcategories.products' => fn ($query) => $query->available()->orderBy('name'),
+                                'subcategories.products' => fn($query) => $query->available()->orderBy('name'),
                             ])
                             ->get()
-                            ->flatMap(function (Category $category) {
+                            ->flatMap(function (ProductCategory $category) {
                                 return $category->subcategories->flatMap(function ($subcategory) use ($category) {
-                                    $group = $category->name.' - '.$subcategory->name;
+                                    $group = $category->name . ' - ' . $subcategory->name;
 
                                     return $subcategory->products->isNotEmpty()
                                         ? [$group => $subcategory->products->pluck('name', 'id')->toArray()]
@@ -67,7 +68,7 @@ class OrderDetailsRelationManager extends RelationManager
                 Forms\Components\TextInput::make('quantity')
                     ->label(__('Quantity'))
                     ->prefixAction(
-                        fn (Get $get, Set $set) => Forms\Components\Actions\Action::make('decrement')
+                        fn(Get $get, Set $set) => Forms\Components\Actions\Action::make('decrement')
                             ->icon('heroicon-o-minus')
                             ->action(function () use ($get, $set) {
                                 $newQuantity = max(1, $get('quantity') - 1);
@@ -75,10 +76,10 @@ class OrderDetailsRelationManager extends RelationManager
                                 $this->calculateSubtotal($get, $set);
                             })
                             ->color('primary')
-                            ->disabled(fn () => $get('quantity') <= 1)
+                            ->disabled(fn() => $get('quantity') <= 1)
                     )
                     ->suffixAction(
-                        fn (Get $get, Set $set) => Forms\Components\Actions\Action::make('increment')
+                        fn(Get $get, Set $set) => Forms\Components\Actions\Action::make('increment')
                             ->icon('heroicon-o-plus')
                             ->action(function () use ($get, $set) {
                                 $newQuantity = $get('quantity') + 1;
@@ -115,7 +116,7 @@ class OrderDetailsRelationManager extends RelationManager
                     ->default(0.00)
                     ->step(0.01)
                     ->live()
-                    ->afterStateUpdated(fn (Get $get, Set $set) => $this->calculateSubtotal($get, $set))
+                    ->afterStateUpdated(fn(Get $get, Set $set) => $this->calculateSubtotal($get, $set))
                     ->columnSpan([
                         'default' => 12,
                         'sm' => 12,
@@ -129,7 +130,7 @@ class OrderDetailsRelationManager extends RelationManager
                     ->default(0.00)
                     ->step(0.01)
                     ->live()
-                    ->afterStateUpdated(fn (Get $get, Set $set) => $this->calculateSubtotal($get, $set))
+                    ->afterStateUpdated(fn(Get $get, Set $set) => $this->calculateSubtotal($get, $set))
                     ->columnSpan([
                         'default' => 12,
                         'sm' => 12,
@@ -197,7 +198,7 @@ class OrderDetailsRelationManager extends RelationManager
 
                 Tables\Columns\TextColumn::make('product.subcategory.name')
                     ->label(__('Subcategory'))
-                    ->description(fn ($record) => $record->subcategory?->category?->name ?? null)
+                    ->description(fn($record) => $record->subcategory?->category?->name ?? null)
                     ->badge()
                     ->sortable()
                     ->searchable()
@@ -210,7 +211,7 @@ class OrderDetailsRelationManager extends RelationManager
 
                 Tables\Columns\TextColumn::make('unit_price')
                     ->label(__('Unit price'))
-                    ->money('USD')
+                    ->money()
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('quantity')
@@ -220,13 +221,19 @@ class OrderDetailsRelationManager extends RelationManager
 
                 Tables\Columns\TextColumn::make('discount')
                     ->label(__('Discount'))
-                    ->description(fn ($record) => $record->discount_percentage.'%')
-                    ->money('USD')
+                    ->description(fn($record) => $record->discount_percentage . '%')
+                    ->money()
+                    ->summarize([
+                        Summarizers\Sum::make()->money(),
+                    ])
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('subtotal')
                     ->label(__('Subtotal'))
-                    ->money('USD')
+                    ->money()
+                    ->summarize([
+                        Summarizers\Sum::make()->money(),
+                    ])
                     ->sortable(),
             ])
             ->filters([
@@ -239,14 +246,14 @@ class OrderDetailsRelationManager extends RelationManager
                     ->modalHeading(__('Add product'))
                     ->modalSubmitActionLabel(__('Add'))
                     ->createAnother(false)
-                    ->successRedirectUrl(fn () => $this->refreshOwnerRecord()),
+                    ->successRedirectUrl(fn() => $this->refreshOwnerRecord()),
             ])
             ->actions([
-                Tables\Actions\EditAction::make()->successRedirectUrl(fn () => $this->refreshOwnerRecord()),
-                Tables\Actions\DeleteAction::make()->successRedirectUrl(fn () => $this->refreshOwnerRecord()),
-                Tables\Actions\RestoreAction::make()->successRedirectUrl(fn () => $this->refreshOwnerRecord()),
+                Tables\Actions\EditAction::make()->successRedirectUrl(fn() => $this->refreshOwnerRecord()),
+                Tables\Actions\DeleteAction::make()->successRedirectUrl(fn() => $this->refreshOwnerRecord()),
+                Tables\Actions\RestoreAction::make()->successRedirectUrl(fn() => $this->refreshOwnerRecord()),
             ])
-            ->modifyQueryUsing(fn (Builder $query) => $query->with([
+            ->modifyQueryUsing(fn(Builder $query) => $query->with([
                 'product.subcategory.category',
             ])->withoutGlobalScopes([
                 SoftDeletingScope::class,

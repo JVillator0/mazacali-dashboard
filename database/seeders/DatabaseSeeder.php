@@ -16,9 +16,11 @@ class DatabaseSeeder extends Seeder
             ShieldSeeder::class,
             UserSeeder::class,
 
-            CategorySeeder::class,
+            ProductCategorySeeder::class,
 
             TableSeeder::class,
+
+            OrderSeeder::class,
         ]);
 
         $this->defaultProductImage();

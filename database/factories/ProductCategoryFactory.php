@@ -2,13 +2,13 @@
 
 namespace Database\Factories;
 
-use App\Models\Subcategory;
+use App\Models\ProductSubcategory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Category>
  */
-class CategoryFactory extends Factory
+class ProductCategoryFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -26,7 +26,7 @@ class CategoryFactory extends Factory
     public function withSubcategories(int $count = 3): static
     {
         return $this->afterCreating(function ($category) use ($count) {
-            Subcategory::factory($count)->create(['category_id' => $category->id]);
+            ProductSubcategory::factory($count)->create(['product_category_id' => $category->id]);
         });
     }
 }

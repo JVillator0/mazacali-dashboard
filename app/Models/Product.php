@@ -18,7 +18,7 @@ class Product extends Model
         'description',
         'price',
         'available',
-        'subcategory_id',
+        'product_subcategory_id',
         'image',
     ];
 
@@ -29,12 +29,12 @@ class Product extends Model
 
     public function subcategory()
     {
-        return $this->belongsTo(Subcategory::class);
+        return $this->belongsTo(ProductSubcategory::class);
     }
 
     public function category()
     {
-        return $this->belongsToThrough(Category::class, Subcategory::class);
+        return $this->belongsToThrough(ProductCategory::class, ProductSubcategory::class);
     }
 
     public function scopeAvailable($query)

@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\ProductSubcategory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -19,9 +20,9 @@ class ProductFactory extends Factory
         return [
             'name' => $this->faker->word(),
             'description' => $this->faker->sentence(),
-            'price' => $this->faker->randomFloat(2, 1, 1000),
+            'price' => $this->faker->randomFloat(2, 1, 20),
             'available' => $this->faker->boolean(),
-            'subcategory_id' => \App\Models\Subcategory::factory(),
+            'product_subcategory_id' => ProductSubcategory::factory(),
             'image' => null,
         ];
     }

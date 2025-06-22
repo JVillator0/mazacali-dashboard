@@ -3,8 +3,8 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\ProductResource\Pages;
-use App\Models\Category;
 use App\Models\Product;
+use App\Models\ProductCategory;
 use CodeWithDennis\FilamentPriceFilter\Filament\Tables\Filters\PriceFilter;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -42,12 +42,12 @@ class ProductResource extends Resource
                             'lg' => 4,
                         ]),
 
-                    Forms\Components\Select::make('subcategory_id')
+                    Forms\Components\Select::make('product_subcategory_id')
                         ->label(__('Subcategory'))
                         ->options(
-                            Category::with('subcategories')
+                            ProductCategory::with('subcategories')
                                 ->get()
-                                ->mapWithKeys(function (Category $category) {
+                                ->mapWithKeys(function (ProductCategory $category) {
                                     if ($category->subcategories->isNotEmpty()) {
                                         return [
                                             $category->name => $category->subcategories->pluck('name', 'id')->toArray(),
@@ -126,7 +126,7 @@ class ProductResource extends Resource
 
                 Tables\Columns\TextColumn::make('subcategory.name')
                     ->label(__('Subcategory'))
-                    ->description(fn ($record) => $record->subcategory?->category?->name ?? null)
+                    ->description(fn($record) => $record->subcategory?->category?->name ?? null)
                     ->badge()
                     ->sortable()
                     ->searchable(),
@@ -138,7 +138,7 @@ class ProductResource extends Resource
 
                 Tables\Columns\TextColumn::make('price')
                     ->label(__('Price'))
-                    ->money('USD')
+                    ->money()
                     ->sortable(),
 
                 Tables\Columns\ToggleColumn::make('available')
@@ -147,7 +147,7 @@ class ProductResource extends Resource
 
                 Tables\Columns\TextColumn::make('description')
                     ->label('Description')
-                    ->tooltip(fn ($state) => strlen($state) > 50 ? $state : null)
+                    ->tooltip(fn($state) => strlen($state) > 50 ? $state : null)
                     ->limit(50)
                     ->sortable()
                     ->searchable()
@@ -171,17 +171,17 @@ class ProductResource extends Resource
             ->filters([
                 PriceFilter::make('price'),
 
-                Tables\Filters\SelectFilter::make('category_id')
+                Tables\Filters\SelectFilter::make('product_category_id')
                     ->label(__('Category'))
-                    ->options(Category::pluck('name', 'id'))
+                    ->options(ProductCategory::pluck('name', 'id'))
                     ->multiple()
                     ->searchable()
                     ->columnSpan(2),
 
-                Tables\Filters\SelectFilter::make('subcategory_id')
+                Tables\Filters\SelectFilter::make('product_subcategory_id')
                     ->label(__('Subcategory'))
                     ->options(
-                        Category::with('subcategories')
+                        ProductCategory::with('subcategories')
                             ->get()
                             ->mapWithKeys(function ($category) {
                                 if ($category->subcategories->isNotEmpty()) {

@@ -44,7 +44,7 @@ class AdminPanelProvider extends PanelProvider
             ->pages([
                 Dashboard::class,
             ])
-            ->navigation(fn (NavigationBuilder $builder) => $builder->groups($this->getMenuNavigation()))
+            ->navigation(fn(NavigationBuilder $builder) => $builder->groups($this->getMenuNavigation()))
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
                 Widgets\AccountWidget::class,
@@ -101,17 +101,12 @@ class AdminPanelProvider extends PanelProvider
                     ...Resources\OrderResource::getNavigationItems(),
                 ]),
 
-            NavigationGroup::make('products')
-                ->label(__('Products management'))
-                ->items([
-                    ...Resources\ProductResource::getNavigationItems(),
-                    ...Resources\CategoryResource::getNavigationItems(),
-                    ...Resources\SubcategoryResource::getNavigationItems(),
-                ]),
-
             NavigationGroup::make('restaurant')
                 ->label(__('Restaurant management'))
                 ->items([
+                    ...Resources\ProductResource::getNavigationItems(),
+                    ...Resources\ProductCategoryResource::getNavigationItems(),
+                    ...Resources\ProductSubcategoryResource::getNavigationItems(),
                     ...Resources\TableResource::getNavigationItems(),
                 ]),
 

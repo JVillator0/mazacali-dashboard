@@ -9,6 +9,7 @@ use Filament\Tables\Columns\Column;
 use Filament\Tables\Filters\BaseFilter;
 use Filament\Tables\Filters\Filter;
 use Illuminate\Support\ServiceProvider;
+use Filament\Tables\Table;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -25,6 +26,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Table::$defaultNumberLocale = 'en_US';
+        Table::$defaultDateDisplayFormat = 'd/m/Y';
+        Table::$defaultDateTimeDisplayFormat = 'd/m/Y h:i A';
+        Table::$defaultTimeDisplayFormat = 'H:i A';
+
         $this->autoTranslateLabels();
     }
 

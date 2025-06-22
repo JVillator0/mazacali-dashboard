@@ -17,7 +17,7 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->decimal('price', 10, 2);
             $table->boolean('available')->default(true);
-            $table->foreignId('subcategory_id')->constrained();
+            $table->foreignId('product_subcategory_id')->constrained();
             $table->string('image')->nullable();
             $table->timestamps();
             $table->softDeletes();
