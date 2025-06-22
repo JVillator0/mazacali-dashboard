@@ -101,6 +101,12 @@ class AdminPanelProvider extends PanelProvider
                     ...Resources\SubcategoryResource::getNavigationItems(),
                 ]),
 
+            NavigationGroup::make('restaurant')
+                ->label(__('Restaurant management'))
+                ->items([
+                    ...Resources\TableResource::getNavigationItems(),
+                ]),
+
             NavigationGroup::make('access_management')
                 ->label(__('Access management'))
                 ->items([

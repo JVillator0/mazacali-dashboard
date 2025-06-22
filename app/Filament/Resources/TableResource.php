@@ -2,8 +2,8 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\SubcategoryResource\Pages;
-use App\Models\Subcategory;
+use App\Filament\Resources\TableResource\Pages;
+use App\Models\Table as TableModel;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -13,37 +13,46 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class SubcategoryResource extends Resource
+class TableResource extends Resource
 {
-    protected static ?string $model = Subcategory::class;
+    protected static ?string $model = TableModel::class;
 
     public static function getModelLabel(): string
     {
-        return __('Subcategory');
+        return __('Table');
     }
 
-    protected static ?string $navigationIcon = 'heroicon-o-square-3-stack-3d';
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Forms\Components\Section::make()->schema([
-                    Forms\Components\Select::make('category_id')
-                        ->label('Category')
-                        ->relationship('category', 'name')
-                        ->required()
-                        ->searchable()
-                        ->columnSpan(12),
-
                     Forms\Components\TextInput::make('name')
                         ->label('Name')
                         ->required()
                         ->maxLength(255)
-                        ->columnSpan(12),
+                        ->columnSpan([
+                            'default' => 12,
+                            'sm' => 8,
+                            'sm' => 6,
+                            'lg' => 10,
+                        ]),
+
+                    Forms\Components\Toggle::make('available')
+                        ->label(__('Available'))
+                        ->inline(false)
+                        ->columnSpan([
+                            'default' => 12,
+                            'sm' => 4,
+                            'sm' => 6,
+                            'lg' => 2,
+                        ]),
 
                     Forms\Components\Textarea::make('description')
-                        ->label('description')
+                        ->label('Description')
+                        ->helperText(__('Ideal for providing additional details about the table, such as its location or special features.'))
                         ->required()
                         ->maxLength(255)
                         ->columnSpan(12),
@@ -54,29 +63,29 @@ class SubcategoryResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->defaultGroup('category.name')
+            ->defaultGroup('available')
             ->groups([
-                Group::make('category.name')
-                    ->label(__('Category')),
+                Group::make('available')
+                    ->label(__('Available'))
+                    ->getTitleFromRecordUsing(fn ($record) => $record->available ? __('Yes') : __('No')),
             ])
             ->columns([
-                Tables\Columns\TextColumn::make('category.name')
-                    ->label('Category')
-                    ->badge()
-                    ->sortable()
-                    ->searchable(),
-
                 Tables\Columns\TextColumn::make('name')
                     ->label('Name')
-                    ->sortable()
-                    ->searchable(),
+                    ->searchable()
+                    ->sortable(),
+
+                Tables\Columns\ToggleColumn::make('available')
+                    ->label(__('Available'))
+                    ->sortable(),
 
                 Tables\Columns\TextColumn::make('description')
                     ->label('Description')
                     ->tooltip(fn ($state) => strlen($state) > 50 ? $state : null)
                     ->limit(50)
                     ->sortable()
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: false),
 
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime('F j, Y g:i A')
@@ -94,13 +103,6 @@ class SubcategoryResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                Tables\Filters\SelectFilter::make('category_id')
-                    ->label('Category')
-                    ->relationship('category', 'name')
-                    ->searchable()
-                    ->multiple()
-                    ->preload(),
-
                 Tables\Filters\TrashedFilter::make(),
             ])
             ->actions([
@@ -121,10 +123,10 @@ class SubcategoryResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListSubcategories::route('/'),
-            'create' => Pages\CreateSubcategory::route('/create'),
-            'view' => Pages\ViewSubcategory::route('/{record}'),
-            'edit' => Pages\EditSubcategory::route('/{record}/edit'),
+            'index' => Pages\ListTables::route('/'),
+            'create' => Pages\CreateTable::route('/create'),
+            'view' => Pages\ViewTable::route('/{record}'),
+            'edit' => Pages\EditTable::route('/{record}/edit'),
         ];
     }
 

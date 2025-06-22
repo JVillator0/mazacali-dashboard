@@ -22,6 +22,11 @@ class Product extends Model
         'image',
     ];
 
+    protected $casts = [
+        'available' => 'boolean',
+        'price' => 'float',
+    ];
+
     public function subcategory()
     {
         return $this->belongsTo(Subcategory::class);
