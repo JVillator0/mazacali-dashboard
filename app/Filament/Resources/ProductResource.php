@@ -5,10 +5,12 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\ProductResource\Pages;
 use App\Models\Category;
 use App\Models\Product;
+use CodeWithDennis\FilamentPriceFilter\Filament\Tables\Filters\PriceFilter;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Grouping\Group;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -106,6 +108,10 @@ class ProductResource extends Resource
     {
         return $table
             ->defaultGroup('subcategory.category.name')
+            ->groups([
+                Group::make('subcategory.category.name')
+                    ->label(__('Category')),
+            ])
             ->columns([
                 Tables\Columns\ImageColumn::make('image')
                     ->label(__('Image'))
@@ -163,6 +169,8 @@ class ProductResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
+                PriceFilter::make('price'),
+
                 Tables\Filters\SelectFilter::make('category_id')
                     ->label(__('Category'))
                     ->options(Category::pluck('name', 'id'))

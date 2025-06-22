@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "40619ede6801497ad94a742cf5d3dc47",
+    "content-hash": "30188b1605b5058b445ec100eb633ffe",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -544,6 +544,87 @@
                 }
             ],
             "time": "2024-02-09T16:56:22+00:00"
+        },
+        {
+            "name": "codewithdennis/filament-price-filter",
+            "version": "v1.1.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/CodeWithDennis/filament-price-filter.git",
+                "reference": "083c874b06fdbb4669bf92ae299486f225e17b8d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/CodeWithDennis/filament-price-filter/zipball/083c874b06fdbb4669bf92ae299486f225e17b8d",
+                "reference": "083c874b06fdbb4669bf92ae299486f225e17b8d",
+                "shasum": ""
+            },
+            "require": {
+                "filament/forms": "^3.0",
+                "php": "^8.1",
+                "spatie/laravel-package-tools": "^1.15.0"
+            },
+            "require-dev": {
+                "laravel/pint": "^1.0",
+                "nunomaduro/collision": "^7.9",
+                "orchestra/testbench": "^8.0",
+                "pestphp/pest": "^2.1",
+                "pestphp/pest-plugin-arch": "^2.0",
+                "pestphp/pest-plugin-laravel": "^2.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "aliases": {
+                        "FilamentPriceFilter": "CodeWithDennis\\FilamentPriceFilter\\Facades\\FilamentPriceFilter"
+                    },
+                    "providers": [
+                        "CodeWithDennis\\FilamentPriceFilter\\FilamentPriceFilterServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "CodeWithDennis\\FilamentPriceFilter\\": "src/",
+                    "CodeWithDennis\\FilamentPriceFilter\\Database\\Factories\\": "database/factories/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "CodeWithDennis",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A simple and customizable price filter for FilamentPHP, allowing users to easily refine results based on specified price ranges.",
+            "homepage": "https://github.com/codewithdennis/filament-price-filter",
+            "keywords": [
+                "CodeWithDennis",
+                "filament",
+                "filament-price-filter",
+                "filamentphp",
+                "filter",
+                "form",
+                "laravel",
+                "laravel-filament",
+                "plugin",
+                "price",
+                "price-filter"
+            ],
+            "support": {
+                "issues": "https://github.com/codewithdennis/filament-price-filter/issues",
+                "source": "https://github.com/codewithdennis/filament-price-filter"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/CodeWithDennis",
+                    "type": "github"
+                }
+            ],
+            "time": "2025-02-17T10:18:01+00:00"
         },
         {
             "name": "composer/class-map-generator",
