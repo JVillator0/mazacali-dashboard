@@ -126,7 +126,7 @@ class ProductResource extends Resource
 
                 Tables\Columns\TextColumn::make('subcategory.name')
                     ->label(__('Subcategory'))
-                    ->description(fn($record) => $record->subcategory?->category?->name ?? null)
+                    ->description(fn ($record) => $record->subcategory?->category?->name ?? null)
                     ->badge()
                     ->sortable()
                     ->searchable(),
@@ -147,7 +147,7 @@ class ProductResource extends Resource
 
                 Tables\Columns\TextColumn::make('description')
                     ->label('Description')
-                    ->tooltip(fn($state) => strlen($state) > 50 ? $state : null)
+                    ->tooltip(fn ($state) => strlen($state) > 50 ? $state : null)
                     ->limit(50)
                     ->sortable()
                     ->searchable()

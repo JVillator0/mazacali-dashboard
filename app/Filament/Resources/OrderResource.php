@@ -95,7 +95,7 @@ class OrderResource extends Resource
                             ->relationship(
                                 'tables',
                                 'name',
-                                fn(Builder $query) => $query->available(),
+                                fn (Builder $query) => $query->available(),
                             )
                             ->multiple()
                             ->preload()
@@ -139,7 +139,7 @@ class OrderResource extends Resource
                                 Forms\Components\Select::make('tipping_percentage')
                                     ->label(__('Tipping percentage'))
                                     ->suffix('%')
-                                    ->placeholder(__('Porcentage') . '...')
+                                    ->placeholder(__('Porcentage').'...')
                                     ->options([0 => '0', 5 => '5', 10 => '10', 15 => '15', 20 => '20'])
                                     ->native(false)
                                     ->default(0)
@@ -186,8 +186,8 @@ class OrderResource extends Resource
                             ]),
 
                         Forms\Components\Placeholder::make('created_at')
-                            ->content(fn($record) => $record->created_at?->format('F j, Y g:i A'))
-                            ->helperText(fn($record) => $record->created_at?->diffForHumans())
+                            ->content(fn ($record) => $record->created_at?->format('F j, Y g:i A'))
+                            ->helperText(fn ($record) => $record->created_at?->diffForHumans())
                             ->label(__('Created at'))
                             ->columnSpan([
                                 'default' => 4,
@@ -198,8 +198,8 @@ class OrderResource extends Resource
                             ]),
 
                         Forms\Components\Placeholder::make('updated_at')
-                            ->content(fn($record) => $record->updated_at?->format('F j, Y g:i A'))
-                            ->helperText(fn($record) => $record->updated_at?->diffForHumans())
+                            ->content(fn ($record) => $record->updated_at?->format('F j, Y g:i A'))
+                            ->helperText(fn ($record) => $record->updated_at?->diffForHumans())
                             ->label(__('Updated at'))
                             ->columnSpan([
                                 'default' => 4,
@@ -239,7 +239,7 @@ class OrderResource extends Resource
 
                 Tables\Columns\TextColumn::make('tipping')
                     ->label(__('Tipping'))
-                    ->description(fn($record) => number_format((($record->tipping_percentage ?? 0) * 100), 0) . '%')
+                    ->description(fn ($record) => number_format((($record->tipping_percentage ?? 0) * 100), 0).'%')
                     ->money()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -253,20 +253,20 @@ class OrderResource extends Resource
                 Tables\Columns\TextColumn::make('status')
                     ->label(__('Status'))
                     ->sortable()
-                    ->formatStateUsing(fn($state) => OrderStatusEnum::from($state->value)?->translatedLabel())
-                    ->color(fn($state) => OrderStatusEnum::from($state->value)->getColor())
+                    ->formatStateUsing(fn ($state) => OrderStatusEnum::from($state->value)?->translatedLabel())
+                    ->color(fn ($state) => OrderStatusEnum::from($state->value)->getColor())
                     ->badge()
                     ->searchable(),
 
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime('F j, Y g:i A')
-                    ->description(fn($record) => $record->created_at?->diffForHumans())
+                    ->description(fn ($record) => $record->created_at?->diffForHumans())
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: false),
 
                 Tables\Columns\TextColumn::make('updated_at')
                     ->dateTime('F j, Y g:i A')
-                    ->description(fn($record) => $record->created_at?->diffForHumans())
+                    ->description(fn ($record) => $record->created_at?->diffForHumans())
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: false),
 
@@ -296,7 +296,7 @@ class OrderResource extends Resource
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make()->visible(fn($record) => $record->isEditable()),
+                Tables\Actions\EditAction::make()->visible(fn ($record) => $record->isEditable()),
             ]);
     }
 

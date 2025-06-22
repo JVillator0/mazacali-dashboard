@@ -73,7 +73,7 @@ class ProductSubcategoryResource extends Resource
 
                 Tables\Columns\TextColumn::make('description')
                     ->label('Description')
-                    ->tooltip(fn($state) => strlen($state) > 50 ? $state : null)
+                    ->tooltip(fn ($state) => strlen($state) > 50 ? $state : null)
                     ->limit(50)
                     ->sortable()
                     ->searchable(),
