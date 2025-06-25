@@ -26,7 +26,7 @@ class OrderSeeder extends Seeder
 
         // Create 10 orders with random users and products
         Order::factory(10)->create([
-            'user_id' => fn () => $users->random()->id,
+            'user_id' => fn() => $users->random()->id,
         ])->each(function ($order) use ($products) {
             $detailsCount = rand(1, 5);
             $subtotal = 0;
@@ -59,9 +59,12 @@ class OrderSeeder extends Seeder
 
             $order->update([
                 'subtotal' => $subtotal,
+                'tax_included' => false,
                 'tax' => $tax,
                 'tipping_percentage' => $tippingPercentage,
                 'tipping' => $tipping,
+                'discount_percentage' => 0,
+                'discount' => 0,
                 'total' => $total,
                 'status' => 'completed',
             ]);

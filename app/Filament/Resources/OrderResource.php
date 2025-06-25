@@ -8,7 +8,11 @@ use App\Filament\Resources\OrderResource\Pages;
 use App\Filament\Resources\OrderResource\RelationManagers;
 use App\Models\Order;
 use Filament\Forms;
+use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
+use Filament\Forms\Set;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -95,7 +99,7 @@ class OrderResource extends Resource
                             ->relationship(
                                 'tables',
                                 'name',
-                                fn (Builder $query) => $query->available(),
+                                fn(Builder $query) => $query->available(),
                             )
                             ->multiple()
                             ->preload()
@@ -114,42 +118,63 @@ class OrderResource extends Resource
                                     ->disabled()
                                     ->default(0)
                                     ->columnSpan([
-                                        'default' => 5,
-                                        'sm' => 5,
+                                        'default' => 8,
+                                        'sm' => 8,
+                                        'md' => 4,
+                                        'lg' => 4,
+                                        'xl' => 4,
+                                    ]),
+
+                                Forms\Components\Toggle::make('tax_included')
+                                    ->label(__('Tax included'))
+                                    ->default(true)
+                                    ->inline(false)
+                                    ->live()
+                                    ->afterStateUpdated(function (Get $get, Set $set, $state) {
+                                        if ($state) {
+                                            $set('tax', 0);
+                                        } else {
+                                            $tax = $get('subtotal') ?? 0 * config('app.vat_rate');
+                                            $set('tax', number_format($tax, 2));
+                                        }
+                                    })
+                                    ->columnSpan([
+                                        'default' => 8,
+                                        'sm' => 4,
                                         'md' => 2,
                                         'lg' => 2,
-                                        'xl' => 1,
+                                        'xl' => 2,
                                     ]),
 
                                 Forms\Components\TextInput::make('tax')
                                     ->label(__('Tax'))
                                     ->prefix('$')
-                                    ->hint('13%')
+                                    ->hint(config('app.vat_rate') * 100 . '% ' . __('VAT'))
                                     ->numeric()
                                     ->disabled()
                                     ->default(0)
                                     ->columnSpan([
-                                        'default' => 4,
+                                        'default' => 8,
                                         'sm' => 4,
                                         'md' => 2,
                                         'lg' => 2,
-                                        'xl' => 1,
+                                        'xl' => 2,
                                     ]),
 
                                 Forms\Components\Select::make('tipping_percentage')
                                     ->label(__('Tipping percentage'))
                                     ->suffix('%')
-                                    ->placeholder(__('Porcentage').'...')
+                                    ->placeholder(__('Porcentage') . '...')
                                     ->options([0 => '0', 5 => '5', 10 => '10', 15 => '15', 20 => '20'])
                                     ->native(false)
                                     ->default(0)
                                     ->required()
                                     ->columnSpan([
-                                        'default' => 4,
+                                        'default' => 8,
                                         'sm' => 4,
                                         'md' => 2,
                                         'lg' => 2,
-                                        'xl' => 1,
+                                        'xl' => 2,
                                     ]),
 
                                 Forms\Components\TextInput::make('tipping')
@@ -159,11 +184,51 @@ class OrderResource extends Resource
                                     ->required()
                                     ->default(0)
                                     ->columnSpan([
-                                        'default' => 4,
+                                        'default' => 8,
                                         'sm' => 4,
                                         'md' => 2,
                                         'lg' => 2,
-                                        'xl' => 1,
+                                        'xl' => 2,
+                                    ]),
+
+                                Forms\Components\TextInput::make('discount_percentage')
+                                    ->label(__('Discount percentage'))
+                                    ->suffix('%')
+                                    ->placeholder(__('Porcentage') . '...')
+                                    ->required()
+                                    ->live(debounce: 500)
+                                    ->afterStateUpdated(function (Get $get, Set $set, $state) {
+                                        if ($state < 0 || $state > 100) {
+                                            Notification::make()
+                                                ->title(__('Invalid discount percentage'))
+                                                ->body(__('The discount percentage must be between 0 and 100.'))
+                                                ->danger()
+                                                ->send();
+                                            return;
+                                        }
+                                        $discountAmount = (($state ?? 0) / 100) * ($get('subtotal') ?? 0);
+                                        $set('discount', $discountAmount);
+                                    })
+                                    ->columnSpan([
+                                        'default' => 8,
+                                        'sm' => 4,
+                                        'md' => 2,
+                                        'lg' => 2,
+                                        'xl' => 2,
+                                    ]),
+
+                                Forms\Components\TextInput::make('discount')
+                                    ->label(__('Discount'))
+                                    ->prefix('$')
+                                    ->numeric()
+                                    ->required()
+                                    ->disabled()
+                                    ->columnSpan([
+                                        'default' => 8,
+                                        'sm' => 4,
+                                        'md' => 2,
+                                        'lg' => 2,
+                                        'xl' => 2,
                                     ]),
 
                                 Forms\Components\TextInput::make('total')
@@ -173,21 +238,21 @@ class OrderResource extends Resource
                                     ->disabled()
                                     ->default(0)
                                     ->columnSpan([
-                                        'default' => 4,
-                                        'sm' => 4,
-                                        'md' => 2,
-                                        'lg' => 2,
-                                        'xl' => 1,
+                                        'default' => 8,
+                                        'sm' => 8,
+                                        'md' => 4,
+                                        'lg' => 4,
+                                        'xl' => 4,
                                     ]),
                             ])
-                            ->columns(4)
+                            ->columns(8)
                             ->columnSpan([
                                 'default' => 4,
                             ]),
 
                         Forms\Components\Placeholder::make('created_at')
-                            ->content(fn ($record) => $record->created_at?->format('F j, Y g:i A'))
-                            ->helperText(fn ($record) => $record->created_at?->diffForHumans())
+                            ->content(fn($record) => $record->created_at?->format('F j, Y g:i A'))
+                            ->helperText(fn($record) => $record->created_at?->diffForHumans())
                             ->label(__('Created at'))
                             ->columnSpan([
                                 'default' => 4,
@@ -198,8 +263,8 @@ class OrderResource extends Resource
                             ]),
 
                         Forms\Components\Placeholder::make('updated_at')
-                            ->content(fn ($record) => $record->updated_at?->format('F j, Y g:i A'))
-                            ->helperText(fn ($record) => $record->updated_at?->diffForHumans())
+                            ->content(fn($record) => $record->updated_at?->format('F j, Y g:i A'))
+                            ->helperText(fn($record) => $record->updated_at?->diffForHumans())
                             ->label(__('Updated at'))
                             ->columnSpan([
                                 'default' => 4,
@@ -239,7 +304,20 @@ class OrderResource extends Resource
 
                 Tables\Columns\TextColumn::make('tipping')
                     ->label(__('Tipping'))
-                    ->description(fn ($record) => number_format((($record->tipping_percentage ?? 0) * 100), 0).'%')
+                    ->description(fn($record) => number_format((($record->tipping_percentage ?? 0) * 100), 0) . '%')
+                    ->money()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
+                Tables\Columns\TextColumn::make('discount_percentage')
+                    ->label(__('Discount percentage'))
+                    ->suffix('%')
+                    ->description(fn($record) => number_format((($record->discount_percentage ?? 0) * 100), 0) . '%')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
+                Tables\Columns\TextColumn::make('discount')
+                    ->label(__('Discount'))
                     ->money()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -253,20 +331,20 @@ class OrderResource extends Resource
                 Tables\Columns\TextColumn::make('status')
                     ->label(__('Status'))
                     ->sortable()
-                    ->formatStateUsing(fn ($state) => OrderStatusEnum::from($state->value)?->translatedLabel())
-                    ->color(fn ($state) => OrderStatusEnum::from($state->value)->getColor())
+                    ->formatStateUsing(fn($state) => OrderStatusEnum::from($state->value)?->translatedLabel())
+                    ->color(fn($state) => OrderStatusEnum::from($state->value)->getColor())
                     ->badge()
                     ->searchable(),
 
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime('F j, Y g:i A')
-                    ->description(fn ($record) => $record->created_at?->diffForHumans())
+                    ->description(fn($record) => $record->created_at?->diffForHumans())
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: false),
 
                 Tables\Columns\TextColumn::make('updated_at')
                     ->dateTime('F j, Y g:i A')
-                    ->description(fn ($record) => $record->created_at?->diffForHumans())
+                    ->description(fn($record) => $record->created_at?->diffForHumans())
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: false),
 
@@ -296,7 +374,7 @@ class OrderResource extends Resource
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make()->visible(fn ($record) => $record->isEditable()),
+                Tables\Actions\EditAction::make()->visible(fn($record) => $record->isEditable()),
             ]);
     }
 

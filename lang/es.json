@@ -358,5 +358,9 @@
     "Reports": "Reportes",
     "(Sales - Expenses) / Sales × 100": "(Ventas - Gastos) / Ventas × 100",
     "(Sales - Expenses) / Expenses × 100": "(Ventas - Gastos) / Gastos × 100",
-    "Expenses / Sales × 100": "Gastos / Ventas × 100"
+    "Expenses / Sales × 100": "Gastos / Ventas × 100",
+    "Invalid discount percentage": "Porcentaje de descuento no válido",
+    "The discount percentage must be between 0 and 100.": "El porcentaje de descuento debe estar entre 0 y 100.",
+    "Tax included": "IVA incluido",
+    "VAT": "IVA"
 }

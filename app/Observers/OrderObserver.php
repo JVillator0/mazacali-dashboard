@@ -51,6 +51,10 @@ class OrderObserver
                     ->update(['available' => true]);
             }
         }
+
+        if ($order->isDirty('tax_included')) {
+            $order->tax = $order->tax_included ? 0 : $order->subtotal * config('app.vat_rate');
+        }
     }
 
     public function deleting(Order $order)
