@@ -4,9 +4,9 @@ namespace App\Filament\Widgets;
 
 use App\Models\Expense;
 use Carbon\Carbon;
+use Filament\Support\Colors\Color;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
-use Filament\Support\Colors\Color;
 
 class StatisticsExpensesWidget extends BaseWidget
 {
@@ -36,22 +36,22 @@ class StatisticsExpensesWidget extends BaseWidget
             $expenses30Days / 30 : 0;
 
         return [
-            Stat::make(__('Total Expenses') . ' (30d)', '$' . number_format($expenses30Days, 2))
-                ->description(round(abs($expensesChange), 2) . '% ' . ($expensesChange >= 0 ? __('increase') : __('decrease')) . ' ' . __('from previous 30 days'))
+            Stat::make(__('Total Expenses').' (30d)', '$'.number_format($expenses30Days, 2))
+                ->description(round(abs($expensesChange), 2).'% '.($expensesChange >= 0 ? __('increase') : __('decrease')).' '.__('from previous 30 days'))
                 ->descriptionIcon($expensesChange >= 0 ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down')
                 ->color($expensesChange >= 0 ? Color::Red : Color::Green),
 
-            Stat::make(__('Monthly Expenses'), '$' . number_format($expensesCurrentMonth, 2))
-                ->description(round(abs($expensesMonthChange), 2) . '% ' . ($expensesMonthChange >= 0 ? __('increase') : __('decrease')) . ' ' . __('from last month'))
+            Stat::make(__('Monthly Expenses'), '$'.number_format($expensesCurrentMonth, 2))
+                ->description(round(abs($expensesMonthChange), 2).'% '.($expensesMonthChange >= 0 ? __('increase') : __('decrease')).' '.__('from last month'))
                 ->descriptionIcon($expensesMonthChange >= 0 ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down')
                 ->color($expensesMonthChange >= 0 ? Color::Red : Color::Green),
 
-            Stat::make(__('Daily Average') . ' (30d)', '$' . number_format($avgDaily, 2))
+            Stat::make(__('Daily Average').' (30d)', '$'.number_format($avgDaily, 2))
                 ->description(__('Average daily expenses'))
                 ->descriptionIcon('heroicon-m-calculator')
                 ->color(Color::Blue),
 
-            Stat::make(__('Records') . ' (30d)', Expense::where('date', '>=', $last30Days)->count())
+            Stat::make(__('Records').' (30d)', Expense::where('date', '>=', $last30Days)->count())
                 ->description(__('Total expense records'))
                 ->descriptionIcon('heroicon-m-document-text')
                 ->color(Color::Gray),

@@ -33,14 +33,14 @@ class ExpenseStatsOverview extends BaseWidget
             ->count();
 
         return [
-            Stat::make(__('Last 30 Days'), '$' . number_format($last30DaysExpenses, 2))
+            Stat::make(__('Last 30 Days'), '$'.number_format($last30DaysExpenses, 2))
                 ->description($periodChange >= 0
-                    ? '+' . number_format($periodChange, 1) . '% ' . __('from previous 30 days')
-                    : number_format($periodChange, 1) . '% ' . __('from previous 30 days'))
+                    ? '+'.number_format($periodChange, 1).'% '.__('from previous 30 days')
+                    : number_format($periodChange, 1).'% '.__('from previous 30 days'))
                 ->descriptionIcon($periodChange >= 0 ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down')
                 ->color($periodChange >= 0 ? 'warning' : 'success'),
 
-            Stat::make(__('Daily Average'), '$' . number_format($avgDailyExpense, 2))
+            Stat::make(__('Daily Average'), '$'.number_format($avgDailyExpense, 2))
                 ->description(__('Average per day last 30 days'))
                 ->descriptionIcon('heroicon-m-calculator')
                 ->color('info'),

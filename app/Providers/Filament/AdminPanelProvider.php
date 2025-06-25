@@ -3,6 +3,7 @@
 namespace App\Providers\Filament;
 
 use App\Filament\Pages\Dashboard;
+use App\Filament\Pages\StatisticsPage;
 use App\Filament\Resources;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -23,7 +24,6 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Jeffgreco13\FilamentBreezy\BreezyCore;
-use App\Filament\Pages\StatisticsPage;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -46,7 +46,7 @@ class AdminPanelProvider extends PanelProvider
             ->pages([
                 Dashboard::class,
             ])
-            ->navigation(fn(NavigationBuilder $builder) => $builder->groups($this->getMenuNavigation()))
+            ->navigation(fn (NavigationBuilder $builder) => $builder->groups($this->getMenuNavigation()))
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
                 Widgets\AccountWidget::class,

@@ -4,9 +4,9 @@ namespace App\Filament\Widgets;
 
 use App\Models\Order;
 use Carbon\Carbon;
+use Filament\Support\Colors\Color;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
-use Filament\Support\Colors\Color;
 
 class StatisticsSalesWidget extends BaseWidget
 {
@@ -41,23 +41,23 @@ class StatisticsSalesWidget extends BaseWidget
             (($totalOrders - $previousOrders) / $previousOrders) * 100 : 0;
 
         return [
-            Stat::make(__('Total Sales') . ' (30d)', '$' . number_format($sales30Days, 2))
-                ->description(round(abs($salesChange), 2) . '% ' . ($salesChange >= 0 ? __('increase') : __('decrease')) . ' ' . __('from previous 30 days'))
+            Stat::make(__('Total Sales').' (30d)', '$'.number_format($sales30Days, 2))
+                ->description(round(abs($salesChange), 2).'% '.($salesChange >= 0 ? __('increase') : __('decrease')).' '.__('from previous 30 days'))
                 ->descriptionIcon($salesChange >= 0 ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down')
                 ->color($salesChange >= 0 ? Color::Green : Color::Red),
 
-            Stat::make(__('Monthly Sales'), '$' . number_format($salesCurrentMonth, 2))
-                ->description(round(abs($salesMonthChange), 2) . '% ' . ($salesMonthChange >= 0 ? __('increase') : __('decrease')) . ' ' . __('from last month'))
+            Stat::make(__('Monthly Sales'), '$'.number_format($salesCurrentMonth, 2))
+                ->description(round(abs($salesMonthChange), 2).'% '.($salesMonthChange >= 0 ? __('increase') : __('decrease')).' '.__('from last month'))
                 ->descriptionIcon($salesMonthChange >= 0 ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down')
                 ->color($salesMonthChange >= 0 ? Color::Green : Color::Red),
 
-            Stat::make(__('Average per Order'), '$' . number_format($avgPerOrder, 2))
+            Stat::make(__('Average per Order'), '$'.number_format($avgPerOrder, 2))
                 ->description(__('Average order value'))
                 ->descriptionIcon('heroicon-m-shopping-cart')
                 ->color(Color::Blue),
 
-            Stat::make(__('Total Orders') . ' (30d)', $totalOrders)
-                ->description(abs($ordersChange) . '% ' . ($ordersChange >= 0 ? __('increase') : __('decrease')) . ' ' . __('from previous 30 days'))
+            Stat::make(__('Total Orders').' (30d)', $totalOrders)
+                ->description(abs($ordersChange).'% '.($ordersChange >= 0 ? __('increase') : __('decrease')).' '.__('from previous 30 days'))
                 ->descriptionIcon($ordersChange >= 0 ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down')
                 ->color($ordersChange >= 0 ? Color::Green : Color::Red),
         ];
