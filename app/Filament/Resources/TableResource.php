@@ -13,6 +13,7 @@ use Filament\Tables\Grouping\Group;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 
 class TableResource extends Resource
 {
@@ -114,6 +115,10 @@ class TableResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\RestoreBulkAction::make(),
+                ]),
+                Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\BulkAction::make('markAsAvailable')
                         ->label(__('Mark as available'))
                         ->action(function ($records) {
@@ -128,6 +133,7 @@ class TableResource extends Resource
                         ->requiresConfirmation()
                         ->icon('heroicon-o-check'),
                 ]),
+                ExportBulkAction::make(),
             ]);
     }
 

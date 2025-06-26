@@ -17,6 +17,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 
 class OrderResource extends Resource
 {
@@ -98,7 +99,7 @@ class OrderResource extends Resource
                             ->relationship(
                                 'tables',
                                 'name',
-                                fn (Builder $query) => $query->available(),
+                                fn(Builder $query) => $query->available(),
                             )
                             ->multiple()
                             ->preload()
@@ -133,9 +134,11 @@ class OrderResource extends Resource
                                         if ($state) {
                                             $set('tax', 0);
                                         } else {
-                                            $tax = $get('subtotal') ?? 0 * config('app.vat_rate');
+                                            $tax = ($get('subtotal') ?? 0) * config('app.vat_rate');
                                             $set('tax', number_format($tax, 2));
                                         }
+
+                                        self::calculateTotal($get, $set);
                                     })
                                     ->columnSpan([
                                         'default' => 8,
@@ -148,7 +151,7 @@ class OrderResource extends Resource
                                 Forms\Components\TextInput::make('tax')
                                     ->label(__('Tax'))
                                     ->prefix('$')
-                                    ->hint(config('app.vat_rate') * 100 .'% '.__('VAT'))
+                                    ->hint(config('app.vat_rate') * 100 . '% ' . __('VAT'))
                                     ->numeric()
                                     ->disabled()
                                     ->default(0)
@@ -163,11 +166,28 @@ class OrderResource extends Resource
                                 Forms\Components\Select::make('tipping_percentage')
                                     ->label(__('Tipping percentage'))
                                     ->suffix('%')
-                                    ->placeholder(__('Porcentage').'...')
+                                    ->placeholder(__('Porcentage') . '...')
                                     ->options([0 => '0', 5 => '5', 10 => '10', 15 => '15', 20 => '20'])
                                     ->native(false)
                                     ->default(0)
                                     ->required()
+                                    ->live(debounce: 500)
+                                    ->afterStateUpdated(function (Get $get, Set $set, $state) {
+                                        if ($state < 0 || $state > 100) {
+                                            Notification::make()
+                                                ->title(__('Invalid tipping percentage'))
+                                                ->body(__('The tipping percentage must be between 0 and 100.'))
+                                                ->danger()
+                                                ->send();
+                                            return;
+                                        }
+
+                                        $subtotal = ($get('subtotal') ?? 0) + ($get('tax') ?? 0);
+                                        $tippingAmount = (($state ?? 0) / 100) * $subtotal;
+                                        $set('tipping', number_format($tippingAmount, 2));
+
+                                        self::calculateTotal($get, $set);
+                                    })
                                     ->columnSpan([
                                         'default' => 8,
                                         'sm' => 4,
@@ -193,7 +213,7 @@ class OrderResource extends Resource
                                 Forms\Components\TextInput::make('discount_percentage')
                                     ->label(__('Discount percentage'))
                                     ->suffix('%')
-                                    ->placeholder(__('Porcentage').'...')
+                                    ->placeholder(__('Porcentage') . '...')
                                     ->required()
                                     ->live(debounce: 500)
                                     ->afterStateUpdated(function (Get $get, Set $set, $state) {
@@ -206,8 +226,12 @@ class OrderResource extends Resource
 
                                             return;
                                         }
-                                        $discountAmount = (($state ?? 0) / 100) * ($get('subtotal') ?? 0);
+
+                                        $subtotal = ($get('subtotal') ?? 0) + ($get('tax')  ?? 0) + ($get('tipping') ?? 0);
+                                        $discountAmount = (($state ?? 0) / 100) * $subtotal;
                                         $set('discount', $discountAmount);
+
+                                        self::calculateTotal($get, $set);
                                     })
                                     ->columnSpan([
                                         'default' => 8,
@@ -251,8 +275,8 @@ class OrderResource extends Resource
                             ]),
 
                         Forms\Components\Placeholder::make('created_at')
-                            ->content(fn ($record) => $record->created_at?->format('F j, Y g:i A'))
-                            ->helperText(fn ($record) => $record->created_at?->diffForHumans())
+                            ->content(fn($record) => $record->created_at?->format('F j, Y g:i A'))
+                            ->helperText(fn($record) => $record->created_at?->diffForHumans())
                             ->label(__('Created at'))
                             ->columnSpan([
                                 'default' => 4,
@@ -263,8 +287,8 @@ class OrderResource extends Resource
                             ]),
 
                         Forms\Components\Placeholder::make('updated_at')
-                            ->content(fn ($record) => $record->updated_at?->format('F j, Y g:i A'))
-                            ->helperText(fn ($record) => $record->updated_at?->diffForHumans())
+                            ->content(fn($record) => $record->updated_at?->format('F j, Y g:i A'))
+                            ->helperText(fn($record) => $record->updated_at?->diffForHumans())
                             ->label(__('Updated at'))
                             ->columnSpan([
                                 'default' => 4,
@@ -275,6 +299,29 @@ class OrderResource extends Resource
                             ]),
                     ])->columns(4),
             ]);
+    }
+
+    public static function calculateTotal(Get $get, Set $set): void
+    {
+        $subtotal = $get('subtotal') ?? 0;
+        $tax = $get('tax') ?? 0;
+        $tipping = $get('tipping') ?? 0;
+        $discount = $get('discount') ?? 0;
+
+        $total = ($subtotal + $tax + $tipping) - $discount;
+
+        // Ensure total is never negative
+        if ($total < 0) {
+            Notification::make()
+                ->title(__('Invalid total'))
+                ->body(__('The total cannot be negative. Please check your inputs.'))
+                ->danger()
+                ->send();
+
+            return;
+        }
+
+        $set('total', number_format($total, 2));
     }
 
     public static function table(Table $table): Table
@@ -304,7 +351,7 @@ class OrderResource extends Resource
 
                 Tables\Columns\TextColumn::make('tipping')
                     ->label(__('Tipping'))
-                    ->description(fn ($record) => number_format((($record->tipping_percentage ?? 0) * 100), 0).'%')
+                    ->description(fn($record) => number_format((($record->tipping_percentage ?? 0) * 100), 0) . '%')
                     ->money()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -312,7 +359,7 @@ class OrderResource extends Resource
                 Tables\Columns\TextColumn::make('discount_percentage')
                     ->label(__('Discount percentage'))
                     ->suffix('%')
-                    ->description(fn ($record) => number_format((($record->discount_percentage ?? 0) * 100), 0).'%')
+                    ->description(fn($record) => number_format((($record->discount_percentage ?? 0) * 100), 0) . '%')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
@@ -331,20 +378,20 @@ class OrderResource extends Resource
                 Tables\Columns\TextColumn::make('status')
                     ->label(__('Status'))
                     ->sortable()
-                    ->formatStateUsing(fn ($state) => OrderStatusEnum::from($state->value)?->translatedLabel())
-                    ->color(fn ($state) => OrderStatusEnum::from($state->value)->getColor())
+                    ->formatStateUsing(fn($state) => OrderStatusEnum::from($state->value)?->translatedLabel())
+                    ->color(fn($state) => OrderStatusEnum::from($state->value)->getColor())
                     ->badge()
                     ->searchable(),
 
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime('F j, Y g:i A')
-                    ->description(fn ($record) => $record->created_at?->diffForHumans())
+                    ->description(fn($record) => $record->created_at?->diffForHumans())
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: false),
 
                 Tables\Columns\TextColumn::make('updated_at')
                     ->dateTime('F j, Y g:i A')
-                    ->description(fn ($record) => $record->created_at?->diffForHumans())
+                    ->description(fn($record) => $record->created_at?->diffForHumans())
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: false),
 
@@ -374,7 +421,14 @@ class OrderResource extends Resource
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make()->visible(fn ($record) => $record->isEditable()),
+                Tables\Actions\EditAction::make()->visible(fn($record) => $record->isEditable()),
+            ])
+            ->bulkActions([
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\RestoreBulkAction::make(),
+                ]),
+                ExportBulkAction::make(),
             ]);
     }
 

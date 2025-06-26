@@ -15,18 +15,22 @@ class DatabaseSeeder extends Seeder
         $this->call([
             ShieldSeeder::class,
             UserSeeder::class,
-
-            ProductCategorySeeder::class,
-
-            TableSeeder::class,
-
-            OrderSeeder::class,
-
-            SupplyCategorySeeder::class,
-            ExpenseSeeder::class,
         ]);
 
-        $this->defaultProductImage();
+        if (! app()->isProduction()) {
+            $this->call([
+                ProductCategorySeeder::class,
+
+                TableSeeder::class,
+
+                OrderSeeder::class,
+
+                SupplyCategorySeeder::class,
+                ExpenseSeeder::class,
+            ]);
+
+            $this->defaultProductImage();
+        }
     }
 
     private function defaultProductImage(): void
