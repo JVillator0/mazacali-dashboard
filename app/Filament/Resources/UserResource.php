@@ -110,7 +110,7 @@ class UserResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery();
+        return parent::getEloquentQuery()->where('id', '>', 1);  // Exclude the default user with ID 1
     }
 
     public static function getPages(): array

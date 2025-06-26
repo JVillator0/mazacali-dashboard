@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder
     {
         if (User::count() > 0) {
             $this->command->info('Database already seeded. Skipping...');
+
             return;
         }
 
@@ -48,7 +49,7 @@ class DatabaseSeeder extends Seeder
         if (! file_exists($destinationDir)) {
             mkdir($destinationDir, 0777, true);
         }
-        $destinationPath = $destinationDir . '/' . $uniqueName;
+        $destinationPath = $destinationDir.'/'.$uniqueName;
         if (file_exists($defaultImage)) {
             copy($defaultImage, $destinationPath);
         }
