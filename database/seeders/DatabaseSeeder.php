@@ -3,6 +3,8 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+
+use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -12,6 +14,11 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        if (User::count() > 0) {
+            $this->command->info('Database already seeded. Skipping...');
+            return;
+        }
+
         $this->call([
             ShieldSeeder::class,
             UserSeeder::class,
@@ -41,7 +48,7 @@ class DatabaseSeeder extends Seeder
         if (! file_exists($destinationDir)) {
             mkdir($destinationDir, 0777, true);
         }
-        $destinationPath = $destinationDir.'/'.$uniqueName;
+        $destinationPath = $destinationDir . '/' . $uniqueName;
         if (file_exists($defaultImage)) {
             copy($defaultImage, $destinationPath);
         }
