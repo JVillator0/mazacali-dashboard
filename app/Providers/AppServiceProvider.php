@@ -10,6 +10,7 @@ use Filament\Tables\Filters\BaseFilter;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\URL;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -26,6 +27,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        if (! app()->isLocal()) {
+            URL::forceScheme('https');
+        }
+
         Table::$defaultNumberLocale = 'en_US';
         Table::$defaultDateDisplayFormat = 'd/m/Y';
         Table::$defaultDateTimeDisplayFormat = 'd/m/Y h:i A';

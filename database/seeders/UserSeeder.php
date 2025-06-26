@@ -12,13 +12,8 @@ class UserSeeder extends Seeder
         $users = [
             [
                 'name' => 'Admin',
-                'email' => 'admin@test.com',
+                'email' => 'super@super.com',
             ],
-            [
-                'name' => 'Normal',
-                'email' => 'normal@test.com',
-            ],
-
         ];
 
         foreach ($users as $user) {
