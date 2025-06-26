@@ -68,14 +68,19 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->plugin(
                 // https://filamentphp.com/plugins/bezhansalleh-shield
-                \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make(),
+                \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make()
+                    ->centralApp()
+                    ->gridColumns(['default' => 1, 'sm' => 2, 'lg' => 3])
+                    ->sectionColumnSpan(1)
+                    ->checkboxListColumns(['default' => 1, 'sm' => 1, 'md' => 1, 'lg' => 1])
+                    ->resourceCheckboxListColumns(['default' => 1, 'sm' => 2]),
 
                 // https://filamentphp.com/plugins/jeffgreco-breezy
                 BreezyCore::make()
                     ->myProfile(
                         shouldRegisterUserMenu: true, // Sets the 'account' link in the panel User Menu (default = true)
                         userMenuLabel: 'My Profile', // Customizes the 'account' link label in the panel User Menu (default = null)
-                        shouldRegisterNavigation: false, // Adds a main navigation item for the My Profile page (default = false)
+                        shouldRegisterNavigation: true, // Adds a main navigation item for the My Profile page (default = false)
                         navigationGroup: 'Settings', // Sets the navigation group for the My Profile page (default = null)
                         hasAvatars: true, // Enables the avatar upload form component (default = false)
                         slug: 'my-profile' // Sets the slug for the profile page (default = 'my-profile')

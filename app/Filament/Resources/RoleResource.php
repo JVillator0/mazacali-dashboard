@@ -48,7 +48,8 @@ class RoleResource extends Resource implements HasShieldPermissions
                                 Forms\Components\TextInput::make('name')
                                     ->label(__('filament-shield::filament-shield.field.name'))
                                     ->unique(
-                                        ignoreRecord: true, /** @phpstan-ignore-next-line */
+                                        ignoreRecord: true,
+                                        /** @phpstan-ignore-next-line */
                                         modifyRuleUsing: fn (Unique $rule) => Utils::isTenancyEnabled() ? $rule->where(Utils::getTenantModelForeignKey(), Filament::getTenant()?->id) : $rule
                                     )
                                     ->required()
@@ -58,6 +59,7 @@ class RoleResource extends Resource implements HasShieldPermissions
                                     ->label(__('filament-shield::filament-shield.field.guard_name'))
                                     ->default(Utils::getFilamentAuthGuard())
                                     ->nullable()
+                                    ->disabled()
                                     ->maxLength(255),
 
                                 Forms\Components\Select::make(config('permission.column_names.team_foreign_key'))
@@ -73,7 +75,8 @@ class RoleResource extends Resource implements HasShieldPermissions
                                     ->offIcon('heroicon-s-shield-exclamation')
                                     ->label(__('filament-shield::filament-shield.field.select_all.name'))
                                     ->helperText(fn (): HtmlString => new HtmlString(__('filament-shield::filament-shield.field.select_all.message')))
-                                    ->dehydrated(fn (bool $state): bool => $state),
+                                    ->dehydrated(fn (bool $state): bool => $state)
+                                    ->inline(false),
 
                             ])
                             ->columns([
