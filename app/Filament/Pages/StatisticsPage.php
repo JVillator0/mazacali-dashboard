@@ -29,6 +29,34 @@ class StatisticsPage extends Page
         return [
             \App\Filament\Widgets\StatisticsExpensesWidget::class,
             \App\Filament\Widgets\StatisticsSalesWidget::class,
+            \App\Filament\Widgets\StatisticsCrossMetricsWidget::class,
+        ];
+    }
+
+    protected function getFooterWidgets(): array
+    {
+        return [
+            \App\Filament\Widgets\SalesVsExpensesChart::class,
+            \App\Filament\Widgets\MonthlyComparisonChart::class,
+            \App\Filament\Widgets\ExpenseDistributionChart::class,
+            \App\Filament\Widgets\SalesDistributionChart::class,
+            \App\Filament\Widgets\TopSubcategoriesChart::class,
+            \App\Filament\Widgets\TopProductsChart::class,
+            \App\Filament\Widgets\PerformanceRadarChart::class,
+        ];
+    }
+
+    public function getHeaderWidgetsColumns(): int|array
+    {
+        return 3;
+    }
+
+    public function getFooterWidgetsColumns(): int|array
+    {
+        return [
+            'default' => 1,
+            'sm' => 2,
+            'lg' => 2,
         ];
     }
 }
