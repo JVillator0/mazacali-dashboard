@@ -34,6 +34,7 @@ class ProductSubcategoryResource extends Resource
                         ->label('Category')
                         ->relationship('category', 'name')
                         ->required()
+                        ->preload()
                         ->searchable()
                         ->columnSpan(12),
 

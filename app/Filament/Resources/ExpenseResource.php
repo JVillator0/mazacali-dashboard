@@ -6,6 +6,7 @@ use App\Enums\MeasureUnitEnum;
 use App\Filament\Resources\ExpenseResource\Pages;
 use App\Filament\Resources\ExpenseResource\Widgets;
 use App\Models\Expense;
+use App\Models\Supply;
 use App\Models\SupplyCategory;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -62,7 +63,10 @@ class ExpenseResource extends Resource
                         ->createOptionForm([
                             Forms\Components\Select::make('supply_category_id')
                                 ->label(__('Supply category'))
-                                ->relationship('supplyCategory', 'name')
+                                ->options(
+                                    SupplyCategory::query()
+                                        ->pluck('name', 'id')
+                                )
                                 ->required()
                                 ->searchable()
                                 ->preload()
@@ -85,6 +89,11 @@ class ExpenseResource extends Resource
                                 ->maxLength(255)
                                 ->columnSpanFull(),
                         ])
+                        ->createOptionUsing(fn(array $data) => Supply::create([
+                            'supply_category_id' => $data['supply_category_id'],
+                            'name' => $data['name'],
+                            'description' => $data['description'] ?? null,
+                        ])->id)
                         ->columns(2)
                         ->columnSpan([
                             'default' => 12,
@@ -95,6 +104,7 @@ class ExpenseResource extends Resource
 
                     Forms\Components\TextInput::make('cost')
                         ->label(__('Cost'))
+                        ->hintIcon('heroicon-o-information-circle', __('Total cost of the supply.'))
                         ->required()
                         ->numeric()
                         ->default(0.00)
@@ -109,6 +119,7 @@ class ExpenseResource extends Resource
 
                     Forms\Components\TextInput::make('quantity')
                         ->label(__('Quantity'))
+                        ->hintIcon('heroicon-o-information-circle', __('Quantity of the supply.'))
                         ->required()
                         ->numeric()
                         ->default(1.00)
@@ -162,7 +173,7 @@ class ExpenseResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('supply.name')
                     ->label(__('Supply'))
-                    ->description(fn ($record) => $record->supply?->supplyCategory?->name ?? null)
+                    ->description(fn($record) => $record->supply?->supplyCategory?->name ?? null)
                     ->sortable()
                     ->searchable(),
 
@@ -174,7 +185,7 @@ class ExpenseResource extends Resource
                 Tables\Columns\TextColumn::make('quantity')
                     ->label(__('Quantity'))
                     ->description(
-                        fn (Expense $record) => MeasureUnitEnum::tryFrom($record->measure_unit?->value)?->translatedLabel(plural: $record->quantity > 1)
+                        fn(Expense $record) => MeasureUnitEnum::tryFrom($record->measure_unit?->value)?->translatedLabel(plural: $record->quantity > 1)
                     )
                     ->badge()
                     ->numeric()
@@ -187,7 +198,7 @@ class ExpenseResource extends Resource
 
                 Tables\Columns\TextColumn::make('notes')
                     ->label(__('Notes'))
-                    ->tooltip(fn ($state) => strlen($state) > 30 ? $state : null)
+                    ->tooltip(fn($state) => strlen($state) > 30 ? $state : null)
                     ->limit(30)
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -241,7 +252,7 @@ class ExpenseResource extends Resource
                     ->searchable()
                     ->multiple()
                     ->preload()
-                    ->options(fn (Builder $query) => $query->pluck('name', 'id'))
+                    ->options(fn(Builder $query) => $query->pluck('name', 'id'))
                     ->columnSpan([
                         'default' => 6,
                         'sm' => 3,

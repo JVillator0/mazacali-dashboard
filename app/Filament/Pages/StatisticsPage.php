@@ -2,10 +2,13 @@
 
 namespace App\Filament\Pages;
 
+use BezhanSalleh\FilamentShield\Traits\HasPageShield;
 use Filament\Pages\Page;
 
 class StatisticsPage extends Page
 {
+    use HasPageShield;
+
     protected static ?string $navigationIcon = 'heroicon-o-chart-bar';
 
     protected static string $view = 'filament.pages.statistics-page';

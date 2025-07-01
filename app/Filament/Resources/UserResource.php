@@ -4,13 +4,17 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\UserResource\Pages;
 use App\Models\User;
+use DragonCode\Support\Facades\Helpers\Str;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Forms\Set;
 use Filament\Resources\Resource;
+use Filament\Support\Colors\Color;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
+use Rawilk\FilamentPasswordInput\Password;
 
 class UserResource extends Resource
 {
@@ -41,10 +45,17 @@ class UserResource extends Resource
                         ->rule('regex:/^[^\s@]+@[^\s@]+\.[^\s@]+$/')
                         ->columnSpan(4),
 
-                    Forms\Components\TextInput::make('password')
+                    Password::make('password')
                         ->label('Password')
                         ->required()
-                        ->password()
+                        ->copyable()
+                        ->revealable()
+                        ->regeneratePassword(
+                            using: fn (Set $set) => $set('password', Str::random(12)),
+                        )
+                        ->visibleOn([
+                            'create',
+                        ])
                         ->columnSpan(4),
 
                     Forms\Components\Select::make('roles')
@@ -96,6 +107,28 @@ class UserResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make()->authorize(fn (User $record) => $record->id !== Auth::id()),
                 Tables\Actions\EditAction::make()->authorize(fn (User $record) => $record->id !== Auth::id()),
+
+                Tables\Actions\Action::make('change_password')
+                    ->label(__('Change Password'))
+                    ->icon('heroicon-o-key')
+                    ->color(Color::Orange)
+                    ->form([
+                        Password::make('password')
+                            ->label('New Password')
+                            ->required()
+                            ->copyable()
+                            ->revealable()
+                            ->regeneratePassword(
+                                using: fn (Set $set) => $set('password', Str::random(12)),
+                            ),
+                    ])
+                    ->action(function (User $record, array $data) {
+                        $record->update([
+                            'password' => bcrypt($data['password']),
+                        ]);
+                    })
+                    ->authorize(fn (User $record) => $record->id !== Auth::id()),
+
                 Tables\Actions\DeleteAction::make()->authorize(fn (User $record) => $record->id !== Auth::id()),
                 Tables\Actions\RestoreAction::make()->authorize(fn (User $record) => $record->id !== Auth::id()),
             ]);

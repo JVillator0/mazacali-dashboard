@@ -22,6 +22,7 @@ use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Jeffgreco13\FilamentBreezy\BreezyCore;
 
@@ -92,7 +93,8 @@ class AdminPanelProvider extends PanelProvider
 
     private function getMenuNavigation(): array
     {
-        return [
+
+        $menu = [
             NavigationGroup::make('home')
                 ->label(__('Home'))
                 ->items([
@@ -101,45 +103,55 @@ class AdminPanelProvider extends PanelProvider
                         ->icon('heroicon-o-home')
                         ->url(Dashboard::getUrl()),
                 ]),
+        ];
 
-            NavigationGroup::make('sales')
+        if (Auth::user()->can('view_any_order')) {
+            $menu[] = NavigationGroup::make('sales')
                 ->label(__('Sales'))
-                ->items([
-                    ...Resources\OrderResource::getNavigationItems(),
-                ]),
+                ->items(Resources\OrderResource::getNavigationItems());
+        }
 
-            NavigationGroup::make('restaurant')
+        if (Auth::user()->can('view_any_product')) {
+            $menu[] = NavigationGroup::make('restaurant')
                 ->label(__('Restaurant management'))
                 ->items([
                     ...Resources\ProductResource::getNavigationItems(),
                     ...Resources\ProductCategoryResource::getNavigationItems(),
                     ...Resources\ProductSubcategoryResource::getNavigationItems(),
                     ...Resources\TableResource::getNavigationItems(),
-                ]),
+                ]);
+        }
 
-            NavigationGroup::make('supply_management')
+        if (Auth::user()->can('view_any_expense')) {
+            $menu[] = NavigationGroup::make('supply_management')
                 ->label(__('Supply management'))
                 ->items([
                     ...Resources\ExpenseResource::getNavigationItems(),
                     ...Resources\SupplyResource::getNavigationItems(),
                     ...Resources\SupplyCategoryResource::getNavigationItems(),
-                ]),
+                ]);
+        }
 
-            NavigationGroup::make('reports')
+        if (Auth::user()->can('page_StatisticsPage')) {
+            $menu[] = NavigationGroup::make('reports')
                 ->label(__('Reports'))
                 ->items([
                     NavigationItem::make('statistics')
                         ->label(__('Statistics'))
                         ->icon('heroicon-o-chart-bar')
                         ->url(StatisticsPage::getUrl()),
-                ]),
+                ]);
+        }
 
-            NavigationGroup::make('access_management')
+        if (Auth::user()->can('view_any_user')) {
+            $menu[] = NavigationGroup::make('access_management')
                 ->label(__('Access management'))
                 ->items([
                     ...Resources\UserResource::getNavigationItems(),
                     ...Resources\RoleResource::getNavigationItems(),
-                ]),
-        ];
+                ]);
+        }
+
+        return $menu;
     }
 }

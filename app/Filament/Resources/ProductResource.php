@@ -60,6 +60,7 @@ class ProductResource extends Resource
                                 ->toArray()
                         )
                         ->live()
+                        ->preload()
                         ->searchable()
                         ->required()
                         ->columnSpan([

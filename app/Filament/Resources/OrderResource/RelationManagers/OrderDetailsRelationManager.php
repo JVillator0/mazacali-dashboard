@@ -61,8 +61,8 @@ class OrderDetailsRelationManager extends RelationManager
                         }
                     })
                     ->required()
-                    ->searchable()
                     ->preload()
+                    ->searchable()
                     ->columnSpanFull(),
 
                 Forms\Components\TextInput::make('quantity')

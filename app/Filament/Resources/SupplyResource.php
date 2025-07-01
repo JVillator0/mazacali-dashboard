@@ -38,6 +38,7 @@ class SupplyResource extends Resource
                         ->label(__('Supply category'))
                         ->relationship('supplyCategory', 'name')
                         ->required()
+                        ->preload()
                         ->searchable()
                         ->columnSpan(12),
 

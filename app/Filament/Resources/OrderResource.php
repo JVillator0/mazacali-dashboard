@@ -72,6 +72,7 @@ class OrderResource extends Resource
                             ->default(OrderStatusEnum::PENDING->value)
                             ->native(false)
                             ->required()
+                            ->preload()
                             ->columnSpan([
                                 'default' => 4,
                                 'sm' => 2,
@@ -86,6 +87,7 @@ class OrderResource extends Resource
                             ->default(OrderTypeEnum::DINE_IN->value)
                             ->native(false)
                             ->required()
+                            ->preload()
                             ->columnSpan([
                                 'default' => 4,
                                 'sm' => 2,
